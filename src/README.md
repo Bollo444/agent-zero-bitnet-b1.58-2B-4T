@@ -153,40 +153,40 @@ Comparison of optimized parallel kernels vs. original implementation:
 
 **Test Configuration:**
 - Model: BitNet-b1.58-2B-4T
-- Hardware: AMD EPYC 7V13 64-Core Processor
+- Hardware: AMD EPYC 7V13
 - Threads: 1 / 2 / 4 / 8 / 12 / 16
 - Test: 128 prompt tokens (pp128) + 128 generated tokens (tg128)
 - Method: Activation Parallel
 
 <div align="center">
 
-<img src="./assets/performance_x86.png" alt="x86_performance" width="800"/>
+<img src="./assets/performance_comparison_amd_epyc.png" alt="performance_comparison_amd_epyc" width="800"/>
 
 </div>
 
 **Test Configuration:**
 - Model: BitNet-b1.58-2B-4T
-- Hardware: ARM Core
-- Threads: 1 / 2 / 4 / 8
+- Hardware: Intel i7-13800H
+- Threads: 1 / 2 / 4 / 6
 - Test: 128 prompt tokens (pp128) + 128 generated tokens (tg128)
-- Method: Activation Parallel with DOTPROD
+- Method: Activation Parallel
 
 <div align="center">
 
-<img src="./assets/performance_arm_dotprod.png" alt="arm_dotprod_performance" width="800"/>
+<img src="./assets/performance_comparison_i7-13800h.png" alt="performance_comparison_i7-13800h" width="800"/>
 
 </div>
 
 **Test Configuration:**
 - Model: BitNet-b1.58-2B-4T
-- Hardware: ARM Core
+- Hardware: Cobalt 100
 - Threads: 1 / 2 / 4 / 8
 - Test: 128 prompt tokens (pp128) + 128 generated tokens (tg128)
-- Method: Activation Parallel without DOTPROD
+- Method: Activation Parallel
 
 <div align="center">
 
-<img src="./assets/performance_arm_no_dotprod.png" alt="arm_no_dotprod_performance" width="800"/>
+<img src="./assets/performance_comparison_cobalt100_dotprod.png" alt="performance_comparison_cobalt100_dotprod" width="800"/>
 
 </div>
 
