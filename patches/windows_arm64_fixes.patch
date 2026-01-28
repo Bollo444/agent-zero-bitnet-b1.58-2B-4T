@@ -1,0 +1,66 @@
+diff --git a/common/common.cpp b/common/common.cpp
+index 451307b5..b8d97422 100644
+--- a/common/common.cpp
++++ b/common/common.cpp
+@@ -58,6 +58,9 @@
+ #pragma warning(disable: 4244 4267) // possible loss of data
+ #endif
+ 
++#include <chrono>
++#include <ctime>
++
+ #if defined(LLAMA_USE_CURL)
+ #ifdef __linux__
+ #include <linux/limits.h>
+@@ -442,10 +445,10 @@ std::string string_strip(const std::string & str) {
+ }
+ 
+ std::string string_get_sortable_timestamp() {
+-    using clock = std::chrono::system_clock;
++    using local_clock = std::chrono::system_clock;
+ 
+-    const clock::time_point current_time = clock::now();
+-    const time_t as_time_t = clock::to_time_t(current_time);
++    const local_clock::time_point current_time = local_clock::now();
++    const time_t as_time_t = local_clock::to_time_t(current_time);
+     char timestamp_no_ns[100];
+     std::strftime(timestamp_no_ns, 100, "%Y_%m_%d-%H_%M_%S", std::localtime(&as_time_t));
+ 
+diff --git a/common/log.cpp b/common/log.cpp
+index 04c7c0ed..28ba741c 100644
+--- a/common/log.cpp
++++ b/common/log.cpp
+@@ -1,4 +1,6 @@
+ #include "log.h"
++#include <chrono>
++#include <ctime>
+ 
+ #include <condition_variable>
+ #include <cstdarg>
+diff --git a/ggml/src/ggml-aarch64.c b/ggml/src/ggml-aarch64.c
+index b4047471..0db107c9 100644
+--- a/ggml/src/ggml-aarch64.c
++++ b/ggml/src/ggml-aarch64.c
+@@ -18,6 +18,7 @@
+ 
+ #include "ggml-aarch64.h"
+ #include "gemm-config.h"
++#include <arm_neon.h>
+ 
+ #if defined(__GNUC__)
+ #pragma GCC diagnostic ignored "-Woverlength-strings"
+diff --git a/ggml/src/ggml.c b/ggml/src/ggml.c
+index 121f72da..780ef8a8 100644
+--- a/ggml/src/ggml.c
++++ b/ggml/src/ggml.c
+@@ -8,6 +8,10 @@
+ #include "ggml.h"
+ #include "ggml-aarch64.h"
+ 
++#if defined(__ARM_NEON) && !defined(__CUDACC__)
++#include <arm_neon.h>
++#endif
++
+ #if defined(_MSC_VER) || defined(__MINGW32__)
+ #include <malloc.h> // using malloc.h with MSC/MINGW
+ #elif !defined(__FreeBSD__) && !defined(__NetBSD__) && !defined(__OpenBSD__)
