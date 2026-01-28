@@ -18,6 +18,8 @@
 *.o
 *.so
 *.tmp
+server_log.txt
+probe_results.txt
 
 # IDE / OS
 
