@@ -56,7 +56,7 @@ if __name__ == "__main__":
     parser.add_argument("-n", "--n-predict", type=int, help="Number of tokens to predict", required=False, default=4096)
     parser.add_argument("-t", "--threads", type=int, help="Number of threads to use", required=False, default=2)
     parser.add_argument("-c", "--ctx-size", type=int, help="Size of the context window", required=False, default=2048)
-    parser.add_argument("--temperature", type=float, help="Temperature for sampling", required=False, default=0.8)
+    parser.add_argument("--temperature", type=float, help="Temperature for sampling", required=False, default=0.0)
     parser.add_argument("--host", type=str, help="IP address to listen on", required=False, default="127.0.0.1")
     parser.add_argument("--port", type=int, help="Port to listen on", required=False, default=8080)
     

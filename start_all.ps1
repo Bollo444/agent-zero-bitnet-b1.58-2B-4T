@@ -3,8 +3,8 @@
 
 $ErrorActionPreference = "Stop"
 
-$BitNetDir = "C:\Users\Amari\.gemini\antigravity\scratch\BitNet"
-$ConfigDir = "C:\Users\Amari\.agent-zero"
+$BitNetDir = $PSScriptRoot
+$ConfigDir = Join-Path $HOME ".agent-zero"
 
 # 1. Cleanup old instances
 Write-Host "Cleaning up old instances..."
@@ -55,27 +55,30 @@ if (-not $BestIP) {
 
 Write-Host "`nFound Best Bridge IP: $BestIP"
 
-# 4. Update Agent Zero Config with the discovered IP
+# 4. Update Agent Zero Config with the discovered IP (Bypassing DNS)
 Write-Host "Updating Agent Zero configuration..."
 $SPath = "$ConfigDir\settings.json"
 if (Test-Path $SPath) {
     $j = Get-Content $SPath -Raw | ConvertFrom-Json
-    $j.chat_model_api_base = "http://host.docker.internal:8080/v1"
-    $j.util_model_api_base = "http://host.docker.internal:8080/v1"
-    $j.browser_model_api_base = "http://host.docker.internal:8080/v1"
+    # Use direct IP to bypass Docker DNS layer issues on ARM64
+    $j.chat_model_api_base = "http://$BestIP:8080/v1"
+    $j.util_model_api_base = "http://$BestIP:8080/v1"
+    $j.browser_model_api_base = "http://$BestIP:8080/v1"
     $j | ConvertTo-Json -Depth 10 | Set-Content $SPath
 }
 
 $EPath = "$ConfigDir\.env"
 if (Test-Path $EPath) {
     $c = Get-Content $EPath
-    $c = $c -replace "CHAT_MODEL_API_BASE=.*", "CHAT_MODEL_API_BASE=http://host.docker.internal:8080/v1"
-    $c = $c -replace "UTIL_MODEL_API_BASE=.*", "UTIL_MODEL_API_BASE=http://host.docker.internal:8080/v1"
+    # Use direct IP to bypass Docker DNS layer issues on ARM64
+    $c = $c -replace "CHAT_MODEL_API_BASE=.*", "CHAT_MODEL_API_BASE=http://$BestIP:8080/v1"
+    $c = $c -replace "UTIL_MODEL_API_BASE=.*", "UTIL_MODEL_API_BASE=http://$BestIP:8080/v1"
     Set-Content $EPath $c
 }
 
 # 5. Launch Agent Zero
 Write-Host "Launching Agent Zero..."
+# Mounts based on internal source code analysis: Agent Zero uses /a0/ as root config
 $V1 = "$ConfigDir" + ":/a0/work_dir"
 $V2 = "$ConfigDir\settings.json" + ":/a0/tmp/settings.json"
 $V3 = "$ConfigDir\.env" + ":/a0/.env"

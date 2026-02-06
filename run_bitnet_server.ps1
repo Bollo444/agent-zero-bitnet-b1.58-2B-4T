@@ -27,14 +27,17 @@ Write-Host "=============================================="
 $env:PATH = "$BinDir;$env:PATH"
 
 # -c 2048: context size
-& $ExePath -m $ModelPath -c 2048 --port 8080 --host 0.0.0.0 -ngl 0 -n 512
+# --temp 0: lock temperature for 1-bit stability
+# --chat-template chatml: apply ChatML template
+& $ExePath -m $ModelPath -c 2048 --port 8080 --host 0.0.0.0 -ngl 0 -n 512 --temp 0 --chat-template chatml
 
 # Verification Hint
 Write-Host "`n[Check] Open http://localhost:8080/v1/models in your browser."
 Write-Host "[Info] If you see JSON, the server is healthy!"
 Write-Host "[Instruction] In Agent Zero Settings, set BOTH 'Main' and 'Utility' models to:"
 Write-Host "    - Provider: Other (OpenAI compatible)"
-Write-Host "    - URL: http://172.27.224.1:8080/v1"
+Write-Host "    - URL: http://[AUTO_DISCOVERED_IP]:8080/v1"
 Write-Host "    - Model: bitnet-b1.58-2B-4T"
+Write-Host "`n[Note] Use start_all.ps1 to automatically discover and lock the correct IP."
 
 
